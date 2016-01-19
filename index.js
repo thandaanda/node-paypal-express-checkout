@@ -13,7 +13,7 @@ function Paypal(username, password, signature, returnUrl, cancelUrl, debug) {
 	this.url = 'https://' + (debug ? 'api-3t.sandbox.paypal.com' : 'api-3t.paypal.com') + '/nvp';
 	this.redirect = 'https://' + (debug ? 'www.sandbox.paypal.com/cgi-bin/webscr' : 'www.paypal.com/cgi-bin/webscr');
 };
-
+/*
 function Paypal(username, password, signature, returnUrl, cancelUrl, debug, subject) {
 	this.username = username;
 	this.password = password;
@@ -25,7 +25,7 @@ function Paypal(username, password, signature, returnUrl, cancelUrl, debug, subj
 	this.url = 'https://' + (debug ? 'api-3t.sandbox.paypal.com' : 'api-3t.paypal.com') + '/nvp';
 	this.redirect = 'https://' + (debug ? 'www.sandbox.paypal.com/cgi-bin/webscr' : 'www.paypal.com/cgi-bin/webscr');
 	this.subject = subject;
-};
+};*/
 
 Paypal.prototype.params = function () {
 	var self = this;
@@ -88,7 +88,7 @@ Paypal.prototype.detail = function (token, payer, callback) {
 	return self;
 };
 
-Paypal.prototype.pay = function (invoiceNumber, amount, description, currency, requireAddress, callback) {
+/*Paypal.prototype.pay = function (invoiceNumber, amount, description, currency, requireAddress, callback) {
 
 	// Backward compatibility
 	if (typeof (requireAddress) === 'function') {
@@ -127,7 +127,7 @@ Paypal.prototype.pay = function (invoiceNumber, amount, description, currency, r
 	});
 
 	return self;
-};
+};*/
 
 Paypal.prototype.pay = function (invoiceNumber, amount, description, currency, requireAddress, subject, callback) {
 
@@ -152,6 +152,8 @@ Paypal.prototype.pay = function (invoiceNumber, amount, description, currency, r
 	params.INVNUM = invoiceNumber;
 	params.CUSTOM = invoiceNumber + '|' + params.AMT + '|' + currency;
 	params.SUBJECT = subject;
+	console.log(self.url);
+	console.log(params);
 
 	self.request(self.url, 'POST', params, function (err, data) {
 
