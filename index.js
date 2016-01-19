@@ -34,23 +34,24 @@ Paypal.prototype.params = function () {
 		PWD: self.password,
 		SIGNATURE: self.signature,
 		SOLUTIONTYPE: self.solutiontype,
-		VERSION: '52.0'
+		VERSION: '124.0'
 	};
 };
 
-Paypal.prototype.detail = function (token, payer, callback) {
+Paypal.prototype.detail = function (token, payer, subject, callback) {
 
 	if (token.get !== undefined && typeof (payer) === 'function') {
 		callback = payer;
 		payer = token.get.PayerID;
 		token = token.get.token;
 	}
-
+	
 	var self = this;
 	var params = self.params();
 
 	params.TOKEN = token;
 	params.METHOD = 'GetExpressCheckoutDetails';
+	params.SUBJECT = subject;
 
 	self.request(self.url, 'POST', params, function (err, data) {
 
@@ -58,7 +59,6 @@ Paypal.prototype.detail = function (token, payer, callback) {
 			callback(err, data);
 			return;
 		}
-
 		if (typeof (data.CUSTOM) === 'undefined') {
 			callback(data, null);
 			return;
@@ -73,6 +73,7 @@ Paypal.prototype.detail = function (token, payer, callback) {
 		params.AMT = custom[1];
 		params.CURRENCYCODE = custom[2];
 		params.METHOD = 'DoExpressCheckoutPayment';
+		params.SUBJECT = subject;
 
 		self.request(self.url, 'POST', params, function (err, data) {
 
@@ -152,8 +153,6 @@ Paypal.prototype.pay = function (invoiceNumber, amount, description, currency, r
 	params.INVNUM = invoiceNumber;
 	params.CUSTOM = invoiceNumber + '|' + params.AMT + '|' + currency;
 	params.SUBJECT = subject;
-	console.log(self.url);
-	console.log(params);
 
 	self.request(self.url, 'POST', params, function (err, data) {
 
